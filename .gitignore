@@ -1,4 +1,4 @@
-__pycache__/**
-ASL_Data/**
-asl_video/**
-asl_video_frames/**
+__pycache__/
+ASL_Data/
+asl_video/
+asl_video_frames/

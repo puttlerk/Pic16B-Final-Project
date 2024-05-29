@@ -9,7 +9,7 @@ from torchvision import transforms, datasets
 from PIL import Image
 
 
-def frames_from_video_file(video_path, frame_start, frame_end, n_frames, output_size = (64, 64), frame_step = 4):
+def frames_from_video_file(video_path, frame_start, frame_end, n_frames, output_size = (32, 32), frame_step = 10):
 
     frames = []
     src = cv2.VideoCapture(video_path)
@@ -80,7 +80,7 @@ def instance_videos(gloss, instances, split):
         vid_path = "../asl_video/videos/" + instance["video_id"] + ".mp4"
         start = instance["frame_start"]
         end = instance["frame_end"]
-        frames = frames_from_video_file(vid_path, start, end, 8)
+        frames = frames_from_video_file(vid_path, start, end, 16)
 
         if len(frames) == 0:
             continue
