@@ -43,7 +43,7 @@ class VideoDataset(Dataset):
 # ])
 # 
 # vtrainpath = "../asl_video_frames/train"
-# vtrainids = glob.glob(vtrainpath + "/*/*")
+# vtrainids = glob.glob(vtrainpath + "/*/*") # TODO make sure that this doesn't include empty dirs or something
 # vtrainlabels = sorted(entry.name for entry in os.scandir(vtrainpath) if entry.is_dir())
 # if not vtrainlabels:
 #     raise FileNotFoundError(f"Couldn't find any class folder in {vtrainpath}.")
