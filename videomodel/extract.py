@@ -7,6 +7,7 @@ import numpy as np
 import torch
 from torchvision import transforms, datasets
 from PIL import Image
+from multiprocessing import Process
 
 
 def frames_from_video_file(video_path, frame_start, frame_end, n_frames, output_size = (32, 32), frame_step = 10):
@@ -93,3 +94,28 @@ def instance_videos(gloss, instances, split):
         for i in range(len(frames)):
             cv2.imwrite(str(i) + ".jpg", frames[i], [cv2.IMWRITE_PNG_COMPRESSION, 5])
         os.chdir(wd)
+
+def extract(split):
+
+    with open("./WLASL_v0.3.json") as file: 
+        data = json.load(file)
+    number = 0;
+    for datum in data:
+        if number == 4:
+            instance_videos(datum["gloss"], datum["instances"], split)
+            number = 0
+        else:
+            number += 1
+
+def extract_all():
+
+    if __name__ == '__main__':
+        train = Process(target = extract, args = ("train",))
+        test = Process(target = extract, args = ("test",))
+        val = Process(target = extract, args = ("val",))
+        train.start()
+        test.start()
+        val.start()
+        train.join()
+        test.join()
+        val.joint()
