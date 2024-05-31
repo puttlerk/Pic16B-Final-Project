@@ -75,8 +75,6 @@ def instance_videos(gloss, instances, split):
         if instance["split"] != split:
             continue
 
-        print(gloss, instance["instance_id"])
-
         # vid_path = instance["url"]
         vid_path = "../asl_video/videos/" + instance["video_id"] + ".mp4"
         start = instance["frame_start"]
@@ -92,20 +90,15 @@ def instance_videos(gloss, instances, split):
         wd = os.getcwd()
         os.chdir("../asl_video_frames/" + split + "/" + gloss + "/" + str(instance["instance_id"]))
         for i in range(len(frames)):
-            cv2.imwrite(str(i) + ".jpg", frames[i], [cv2.IMWRITE_PNG_COMPRESSION, 5])
+            cv2.imwrite(str(i) + ".jpg", frames[i], [cv2.IMWRITE_PNG_COMPRESSION, 3])
         os.chdir(wd)
 
 def extract(split):
 
     with open("./WLASL_v0.3.json") as file: 
         data = json.load(file)
-    number = 0;
     for datum in data:
-        if number == 4:
-            instance_videos(datum["gloss"], datum["instances"], split)
-            number = 0
-        else:
-            number += 1
+        instance_videos(datum["gloss"], datum["instances"], split)
 
 def extract_all():
 
@@ -118,4 +111,6 @@ def extract_all():
         val.start()
         train.join()
         test.join()
-        val.joint()
+        val.join()
+
+extract_all()
