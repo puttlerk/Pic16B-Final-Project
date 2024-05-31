@@ -1,12 +1,12 @@
 import os
 import json
 import cv2
+import re
 import random
 import pandas as pd
 import numpy as np
 import torch
 from torchvision import transforms, datasets
-from PIL import Image
 from multiprocessing import Process
 
 
@@ -112,5 +112,3 @@ def extract_all():
         train.join()
         test.join()
         val.join()
-
-extract_all()
