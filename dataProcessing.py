@@ -1,12 +1,22 @@
 import os
 import torch
+import random
 from PIL import Image
-from torch.utils.data import DataLoader, random_split, Dataset
+from torch.utils.data import DataLoader, random_split, Dataset, SubsetRandomSampler, Subset
 from torchvision import transforms, datasets
 
 
-# Define transformations
-transform = transforms.Compose([
+# Define train transformations
+train_transform = transforms.Compose([
+    transforms.Resize((32,32)),
+    transforms.RandomRotation(degrees=15),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+
+# Define test transformations
+test_transform = transforms.Compose([
     transforms.Resize((32,32)),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -17,24 +27,39 @@ transform = transforms.Compose([
 train_repo_path = "ASL_Data/asl_alphabet_train/asl_alphabet_train"
 
 # Create PyTorch dataset using ImageFolder
-train_dataset = datasets.ImageFolder(root=train_repo_path, transform=transform)
+full_dataset_train = datasets.ImageFolder(root=train_repo_path, transform=train_transform)
+full_dataset_test = datasets.ImageFolder(root=train_repo_path, transform=test_transform)
 
-
-# Calculates how many training examples should be in train and validation datasets
-total_size = len(train_dataset)
+# Calculates how many training examples should be in train and test datasets
+total_size = len(full_dataset_train)
 train_size = int(0.8 * total_size)
-val_size = total_size - train_size
+test_size = total_size - train_size
 
-# Splits the data into train_data and validation_data
-train_data, val_data = random_split(train_dataset, [train_size, val_size])
+# Gets random indices for test and training
+train_indices = random.sample(range(total_size), train_size)
+test_indices = list(set(range(total_size)) - set(train_indices))
 
+# Splits the data into train_data and test_data
+train_data = Subset(full_dataset_train, train_indices)
+test_data = Subset(full_dataset_test, test_indices)
+
+
+# A subset of training data
+index = list(range(0, int(train_size * 0.1)))
+fraction_data = torch.utils.data.Subset(train_data, index)
 
 BATCH_SIZE = 256
 
-# Dataloader for out train and validation sets
+# Dataloader for out train and test sets
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
-val_loader = torch.utils.data.DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = torch.utils.data.DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
 
+
+# Dataloader for subset of training data that was used for hyperparameter tuning
+fraction_loader = torch.utils.data.DataLoader(fraction_data, batch_size=BATCH_SIZE, shuffle=True)
+
+"""
+Might delete later...
 
 class testImagesDataset(Dataset):
     def __init__(self, root, transform=None):
@@ -59,4 +84,4 @@ class testImagesDataset(Dataset):
 
 # creates our dataset and dataloader
 test_dataset = testImagesDataset(root = "ASL_Data/asl_alphabet_test/asl_alphabet_test", transform=transform)
-test_loader = DataLoader(test_dataset, batch_size = 1)
+test_loader = DataLoader(test_dataset, batch_size = 1) """

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from dataProcessing import train_loader, val_loader
+#from dataProcessing import train_loader, val_loader
 
 
 
@@ -20,7 +20,7 @@ class LeNet5(nn.Module):
         self.fc3 = nn.Linear(400,120)
         self.fc4 = nn.Linear(120, 84)
         self.fc5 = nn.Linear(84, 29)
-
+        self.dropout = nn.Dropout(p=0.5)
 
     def forward(self, x):
         x = F.relu(self.pool1(self.conv1(x)))
@@ -29,6 +29,7 @@ class LeNet5(nn.Module):
         x = x.view(-1,400)
 
         x = F.relu(self.fc3(x))
+        x = self.dropout(x)
         x = F.relu(self.fc4(x))
         x = self.fc5(x)
 
