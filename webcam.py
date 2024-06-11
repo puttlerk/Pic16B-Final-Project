@@ -36,9 +36,19 @@ def capture_loop(quit_flag):
         ret, frame = cap.read() # read a frame
         if (ret): # if the read was successful
             cv2.imshow("frame", frame) # show the frame
+            print(type(frame))
         
     cap.release() # close the webcam file descriptor
     cv2.destroyAllWindows() # close the windows we made
+
+
+def box_on_frame(frame):
+    """
+    Puts a box in the frame indicating where the model will look
+
+    args:
+        frame: the cv2 frame to 
+    """
 
 def main_loop():
     """
