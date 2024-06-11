@@ -31,3 +31,5 @@ def main_loop():
 
     vid.release()
     cv2.destroyAllWindows()
+
+main_loop()
