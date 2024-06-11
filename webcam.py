@@ -42,9 +42,10 @@ def main_loop(model_type, model_path):
         
         # apply the model to the frame
         pred = model(frame)
+        print("\rPrediction: ", pred)
         
         # if the user presses q break the loop
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey() & 0xFF == ord('q'):
             break
 
     # close file descriptor and windows
