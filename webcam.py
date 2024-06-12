@@ -37,7 +37,8 @@ def predict_on_frame(frame, model):
 
     image = transforms.ToPILImage()(frame)
     image = np.array(image)
-    image = image[:,:,::-1].copy()
+
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     cv2.imshow('transformed', image)
 
     output = model(frame)
