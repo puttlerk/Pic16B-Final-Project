@@ -31,7 +31,7 @@ def predict_on_frame(frame, model):
         number representing the predicted sign of the image
     """
     # make a bunch of predictions on slightly modified frame
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = PIL.Image.fromarray(frame)
     frame = WEBCAM_TRANSFORM(frame)
 
