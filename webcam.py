@@ -49,7 +49,7 @@ def main_loop():
     """
     # get the trained model weights
     model = LeNet5()
-    model.load_state_dict(torch.load(" "))
+    model.load_state_dict(torch.load("NewImageRecognitionModel.pth"))
 
 
     # get a file descriptor to the webcam
