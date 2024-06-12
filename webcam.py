@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torchvision import transforms
 import PIL
+from PIL import Image
 from scipy import stats
 
 from dataProcessing import test_transform
@@ -32,6 +33,10 @@ def predict_on_frame(frame, model):
     # make a bunch of predictions on slightly modified frame
     frame= PIL.Image.fromarray(frame)
     frame = WEBCAM_TRANSFORM(frame)
+
+    image = transforms.ToPILImage()(frame)
+    Image.save()
+
     output = model(frame)
     _, pred = torch.max(output.data, 1)
     pred = pred.item()
