@@ -12,7 +12,7 @@ from models import LeNet5
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((32,32)),
     transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    #transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 labels_names = [chr(ord('A') + i) for i in range(26)]
@@ -31,13 +31,16 @@ def predict_on_frame(frame, model):
         number representing the predicted sign of the image
     """
     # make a bunch of predictions on slightly modified frame
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = PIL.Image.fromarray(frame)
-    frame = WEBCAM_TRANSFORM(frame)
 
+
+    frame = WEBCAM_TRANSFORM(frame)
     image = transforms.ToPILImage()(frame)
+    image.save('stuff.jpg')
     image = np.array(image)
-    image = image[:,:,::-1].copy()
+
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     cv2.imshow('transformed', image)
 
     output = model(frame)
