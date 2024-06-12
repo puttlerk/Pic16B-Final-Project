@@ -51,7 +51,7 @@ fraction_data = torch.utils.data.Subset(train_data, index)
 BATCH_SIZE = 256
 
 # Dataloader for out train and test sets
-train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=8 )
 test_loader = torch.utils.data.DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
 
 
