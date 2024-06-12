@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import torch
-from torch import transforms
+from torchvision import transforms
 import PIL
 from scipy import stats
 
@@ -10,11 +10,12 @@ from models import LeNet5
 
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((32,32)),
-    transforms.RandomRotation(degrees=15),
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
+
+labels_names = [chr(ord('A') + i) for i in range(26)]
+labels_names.extend(["del","nothing","space"])
 
 def predict_on_frame(frame, model):
     """
@@ -28,18 +29,14 @@ def predict_on_frame(frame, model):
     @returns:
         number representing the predicted sign of the image
     """
-    
     # make a bunch of predictions on slightly modified frame
-    predictions = np.zeros(100)
-    for i, prediction in enumerate(predictions):
-        frame = WEBCAM_TRANSFORM(frame)
-        output = model(frame)
-        _, pred = torch.max(output.data, 1)
-        predictions[i] = pred
+    frame = WEBCAM_TRANSFORM(frame)
+    output = model(frame)
+    _, pred = torch.max(output.data, 1)
+    pred = pred.item()
+    pred = labels_names[pred]
+    return pred
 
-    # take the most frequent prediction
-    prediction = stats.mode(predictions)
-    return prediction
 
 
 def main_loop():
@@ -51,30 +48,37 @@ def main_loop():
         model_path: string, path to the saved model weights
     """
     # get the trained model weights
-    model = LeNet5
-    model.load_state_dict(torch.load("../ImageRecognitionModel.pth"))
+    model = LeNet5()
+    model.load_state_dict(torch.load("ImageRecognitionModel.pth"))
 
     # get a file descriptor to the webcam
-    vid = cv2.VideoCapture(0) 
+    vid = cv2.VideoCapture(0)
+    frame_width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+    frame_height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    frame_middle_x = frame_width / 2
+    frame_middle_y = frame_height / 2
 
     # read frames from webcam and predict with model
     while True:
         ret, frame = vid.read() # read a frame
         if not ret:
             continue
-        frame = cv2.rectangle(frame, (173, 172), (428, 428), (255, 0, 0), 2)
+        frame = cv2.rectangle(frame,
+                              (int(frame_middle_x - frame_width / 6), int(frame_middle_y - frame_width / 6)),
+                              (int(frame_middle_x + frame_width / 6), int(frame_middle_y + frame_width / 6)),
+                              (255, 0, 0),
+                              2)
         cv2.imshow("frame", frame) # show the frame
         
         # crop out the part that we use for prediction
-        pred_frame = cv2.getRectSubPix(frame, (256, 256), (300, 300))       
-        pred_frame = PIL.Image.from_numpy(pred_frame)
-
+        pred_frame = cv2.getRectSubPix(frame, (int(frame_middle_x), int(frame_middle_y)), (int(frame_width / 3), int(frame_height / 3)))
+        pred_frame = PIL.Image.fromarray(pred_frame)
         # apply the model to the frame
         pred = predict_on_frame(pred_frame, model)
         print("\rPrediction: ", pred)
         
         # if the user presses q break the loop
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(300) & 0xFF == ord('q'):
             break
 
     # close file descriptor and windows
