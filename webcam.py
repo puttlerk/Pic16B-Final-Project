@@ -30,6 +30,7 @@ def predict_on_frame(frame, model):
         number representing the predicted sign of the image
     """
     # make a bunch of predictions on slightly modified frame
+    frame= PIL.Image.fromarray(frame)
     frame = WEBCAM_TRANSFORM(frame)
     output = model(frame)
     _, pred = torch.max(output.data, 1)
@@ -75,12 +76,15 @@ def main_loop():
         # crop out the part that we use for prediction
         pred_frame = cv2.getRectSubPix(frame, (int(frame_middle_x), int(frame_middle_y)), (int(frame_width / 3), int(frame_height / 3)))
         cv2.imshow("pred_frame", pred_frame)
-        pred_frame = PIL.Image.fromarray(pred_frame)
         # apply the model to the frame
         pred = predict_on_frame(pred_frame, model)
         print("\rPrediction: ", pred)
         
         # if the user presses q break the loop
+        while True:
+            if cv2.waitKey(300) & 0xFF == ord('w'):
+                break
+
         if cv2.waitKey(300) & 0xFF == ord('q'):
             break
 
