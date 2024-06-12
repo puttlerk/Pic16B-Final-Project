@@ -31,7 +31,8 @@ def predict_on_frame(frame, model):
         number representing the predicted sign of the image
     """
     # make a bunch of predictions on slightly modified frame
-    frame= PIL.Image.fromarray(frame)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB
+    frame = PIL.Image.fromarray(frame)
     frame = WEBCAM_TRANSFORM(frame)
 
     image = transforms.ToPILImage()(frame)
@@ -91,10 +92,6 @@ def main_loop():
         print("\rPrediction: ", pred)
         
         # if the user presses q break the loop
-        while True:
-            if cv2.waitKey(300) & 0xFF == ord('w'):
-                break
-
         if cv2.waitKey(300) & 0xFF == ord('q'):
             break
 
