@@ -59,6 +59,11 @@ def main_loop():
     frame_height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
     frame_middle_x = frame_width / 2
     frame_middle_y = frame_height / 2
+    
+    top_left_x = int(frame_middle_x - frame_width / 6)
+    top_left_y = int(frame_middle_y - frame_height / 6)
+    bot_right_x = int(frame_middle_x + frame_width / 6)
+    bot_right_y = int(frame_middle_y + frame_height / 6)
 
     # read frames from webcam and predict with model
     while True:
@@ -67,14 +72,14 @@ def main_loop():
             continue
         frame = cv2.flip(frame, 1)
         frame = cv2.rectangle(frame,
-                              (int(frame_middle_x - frame_width / 6), int(frame_middle_y - frame_width / 6)),
-                              (int(frame_middle_x + frame_width / 6), int(frame_middle_y + frame_width / 6)),
+                              (top_left_x, top_left_y),
+                              (bot_right_x, bot_right_y),
                               (255, 0, 0),
                               2)
         cv2.imshow("frame", frame) # show the frame
         
         # crop out the part that we use for prediction
-        pred_frame = cv2.getRectSubPix(frame, (int(frame_middle_x), int(frame_middle_y)), (int(frame_width / 3), int(frame_height / 3)))
+        pred_frame = frame[top_left_y:bot_right_y, top_left_x:bot_right_x]
         cv2.imshow("pred_frame", pred_frame)
         # apply the model to the frame
         pred = predict_on_frame(pred_frame, model)
