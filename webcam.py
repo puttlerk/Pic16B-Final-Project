@@ -32,7 +32,7 @@ def predict_on_frame(frame, model):
     # make a bunch of predictions on slightly modified frame
     predictions = np.zeros(100)
     for i, prediction in enumerate(predictions):
-        frame = WEBCAM_TRANSFORM
+        frame = WEBCAM_TRANSFORM(frame)
         output = model(frame)
         _, pred = torch.max(output.data, 1)
         predictions[i] = pred
@@ -62,7 +62,7 @@ def main_loop():
         ret, frame = vid.read() # read a frame
         if not ret:
             continue
-        frame = cv2.rectangle(frame, (172, 172), (428, 428), (255, 0, 0), 2)
+        frame = cv2.rectangle(frame, (173, 172), (428, 428), (255, 0, 0), 2)
         cv2.imshow("frame", frame) # show the frame
         
         # crop out the part that we use for prediction
