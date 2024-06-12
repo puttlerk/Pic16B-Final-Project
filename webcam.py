@@ -74,6 +74,7 @@ def main_loop():
         
         # crop out the part that we use for prediction
         pred_frame = cv2.getRectSubPix(frame, (int(frame_middle_x), int(frame_middle_y)), (int(frame_width / 3), int(frame_height / 3)))
+        cv2.imshow("pred_frame", pred_frame)
         pred_frame = PIL.Image.fromarray(pred_frame)
         # apply the model to the frame
         pred = predict_on_frame(pred_frame, model)
