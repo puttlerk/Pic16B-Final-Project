@@ -35,15 +35,15 @@ def predict_on_frame(frame, model):
     frame = WEBCAM_TRANSFORM(frame)
 
     image = transforms.ToPILImage()(frame)
-    Image.save()
+    image = np.array(image)
+    image = image[:,:,::-1].copy()
+    cv2.imshow('transformed', image)
 
     output = model(frame)
     _, pred = torch.max(output.data, 1)
     pred = pred.item()
     pred = labels_names[pred]
     return pred
-
-
 
 def main_loop():
     """
