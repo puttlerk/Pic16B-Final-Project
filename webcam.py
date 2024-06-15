@@ -12,11 +12,12 @@ from models import LeNet5
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((32,32)),
     transforms.ToTensor(),
-    #transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 labels_names = [chr(ord('A') + i) for i in range(26)]
 labels_names.extend(["del","nothing","space"])
+
 
 def predict_on_frame(frame, model):
     """
@@ -59,7 +60,7 @@ def main_loop():
     """
     # get the trained model weights
     model = LeNet5()
-    model.load_state_dict(torch.load("NewImageRecognitionModel.pth"))
+    model.load_state_dict(torch.load("LeNet5Normalized.pth"))
 
 
     # get a file descriptor to the webcam
@@ -69,23 +70,35 @@ def main_loop():
     frame_middle_x = frame_width / 2
     frame_middle_y = frame_height / 2
     
-    top_left_x = int(frame_middle_x - frame_width / 6)
-    top_left_y = int(frame_middle_y - frame_height / 6)
-    bot_right_x = int(frame_middle_x + frame_width / 6)
-    bot_right_y = int(frame_middle_y + frame_height / 6)
+    top_left_x = int(frame_middle_x - 1200 / 6)
+    top_left_y = int(frame_middle_y - 1200 / 6)
+    bot_right_x = int(frame_middle_x + 1200 / 6)
+    bot_right_y = int(frame_middle_y + 1200 / 6)
+
+    number_to_display = 42  # Example number
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    position = (50, 50)  # Position where the text will be displayed
+    font_scale = 1
+    font_color = (0, 255, 0)  # Green color in BGR
+    line_type = 2
+
 
     # read frames from webcam and predict with model
     while True:
         ret, frame = vid.read() # read a frame
         if not ret:
             continue
+
+
+
         frame = cv2.flip(frame, 1)
         frame = cv2.rectangle(frame,
                               (top_left_x, top_left_y),
                               (bot_right_x, bot_right_y),
                               (255, 0, 0),
                               2)
-        cv2.imshow("frame", frame) # show the frame
+
+         # show the frame
         
         # crop out the part that we use for prediction
         pred_frame = frame[top_left_y:bot_right_y, top_left_x:bot_right_x]
@@ -93,6 +106,17 @@ def main_loop():
         # apply the model to the frame
         pred = predict_on_frame(pred_frame, model)
         print("\rPrediction: ", pred)
+
+        cv2.putText(frame, str(pred),
+                    position,
+                    font,
+                    font_scale,
+                    font_color,
+                    line_type)
+
+        cv2.imshow("frame", frame)
+
+
         
         # if the user presses q break the loop
         if cv2.waitKey(300) & 0xFF == ord('q'):
