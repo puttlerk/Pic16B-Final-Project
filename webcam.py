@@ -6,11 +6,10 @@ import PIL
 from PIL import Image
 from scipy import stats
 
-from dataProcessing import test_transform
-from models import LeNet5
+from models import AlexNet
 
 WEBCAM_TRANSFORM = transforms.Compose([
-    transforms.Resize((32,32)),
+    transforms.Resize((227,227)),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
@@ -38,7 +37,6 @@ def predict_on_frame(frame, model):
 
     frame = WEBCAM_TRANSFORM(frame)
     image = transforms.ToPILImage()(frame)
-    image.save('stuff.jpg')
     image = np.array(image)
 
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
@@ -59,8 +57,8 @@ def main_loop():
         model_path: string, path to the saved model weights
     """
     # get the trained model weights
-    model = LeNet5()
-    model.load_state_dict(torch.load("LeNet5Normalized.pth"))
+    model = AlexNet()
+    model.load_state_dict(torch.load("AlexNet30Epoch.pth"))
 
 
     # get a file descriptor to the webcam
