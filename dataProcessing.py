@@ -1,87 +1,111 @@
-import os
-import torch
-import random
-from PIL import Image
-from torch.utils.data import DataLoader, random_split, Dataset, SubsetRandomSampler, Subset
+from torch.utils.data import DataLoader, random_split
 from torchvision import transforms, datasets
 
 
 # Define train transformations
-train_transform = transforms.Compose([
-    transforms.Resize((32,32)),
+# LeNet
+train_transform_le = transforms.Compose([
+    # Resize the image to expected the size for LeNet
+    transforms.Resize((32, 32)),
+    # Data Augmentation: RandomRotations
     transforms.RandomRotation(degrees=15),
+    # Data Augmentation: Color jitter
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+    # Conver to tensor
     transforms.ToTensor(),
+<<<<<<< HEAD
+=======
+    # Normalize
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+
+# AlexNet
+train_transform_alex = transforms.Compose([
+    # Resize the image to expected the size for AlexNet
+    transforms.Resize((227, 227)),
+    # Data Augmentation: RandomRotations
+    transforms.RandomRotation(degrees=15),
+    # Data Augmentation: Color jitter
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+    # Conver to tensor
+    transforms.ToTensor(),
+    # Normalize
+>>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 # Define test transformations
-test_transform = transforms.Compose([
-    transforms.Resize((32,32)),
+# Lenet
+test_transform_le = transforms.Compose([
+    # Resize the image to expected the size for LeNet
+    transforms.Resize((32, 32)),
+    # Convert to tensor
     transforms.ToTensor(),
+<<<<<<< HEAD
+=======
+    # Normalize
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+
+# AlexNet
+test_transform_alex = transforms.Compose([
+    # Resize the image to the expected size for AlexNet
+    transforms.Resize((227, 227)),
+    # Convert to tensor
+    transforms.ToTensor(),
+    # Normalize
+>>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 
-# Path to  training images
-train_repo_path = "ASL_Data/asl_alphabet_train/asl_alphabet_train"
+def build_dataloader(dir, batch_size = 1, shuffle = False, num_workers = 0, pin_memory = False, transform = None):
+    """
+    Split the data in the directory dir into training and validation subsets
 
-# Create PyTorch dataset using ImageFolder
-full_dataset_train = datasets.ImageFolder(root=train_repo_path, transform=train_transform)
-full_dataset_test = datasets.ImageFolder(root=train_repo_path, transform=test_transform)
+    @params:
+        dir: string, path to the directory containing the image data to load
+        batch_size: int greater than 0, batch_size
+        shuffle: bool, whether data is shuffled when building dataloader
+        num_workers: int greater than 0, num_workers in dataloader
+        pin_memory: bool, pin_memory in dataloader
+        transform: pytorch transform, transform in dataloader
 
-# Calculates how many training examples should be in train and test datasets
-total_size = len(full_dataset_train)
-train_size = int(0.8 * total_size)
-test_size = total_size - train_size
+    @returns:
+        loader, dataloader representing the data 
+    """
+    # Create PyTorch dataset using ImageFolder for LeNet
+    dataset = datasets.ImageFolder(root = dir, transform = transform)
 
-# Gets random indices for test and training
-train_indices = random.sample(range(total_size), train_size)
-test_indices = list(set(range(total_size)) - set(train_indices))
-
-# Splits the data into train_data and test_data
-train_data = Subset(full_dataset_train, train_indices)
-test_data = Subset(full_dataset_test, test_indices)
-
-
-# A subset of training data
-index = list(range(0, int(train_size * 0.1)))
-fraction_data = torch.utils.data.Subset(train_data, index)
-
-BATCH_SIZE = 256
-
-# Dataloader for out train and test sets
-train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=8 )
-test_loader = torch.utils.data.DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
+    return DataLoader(dataset, batch_size = batch_size, shuffle = shuffle, num_workers = num_workers, pin_memory = pin_memory)
 
 
-# Dataloader for subset of training data that was used for hyperparameter tuning
-fraction_loader = torch.utils.data.DataLoader(fraction_data, batch_size=BATCH_SIZE, shuffle=True)
+def split_dataloaders(dir, train_size = 0.8, batch_size = 1, shuffle = False, num_workers = 0, pin_memory = False, transform = None):
+    """
+    Split the data in the directory dir into training and validation subsets
 
-"""
-Might delete later...
+    @params:
+        dir: string, path to the directory containing the image data to load
+        train_size: float between 0 and 1, size of the training set
+        batch_size: int greater than 0, batch_size
+        shuffle: bool, whether data is shuffled when building dataloader
+        num_workers: int greater than 0, num_workers in dataloader
+        pin_memory: bool, pin_memory in dataloader
+        transform: pytorch transform, transform in dataloader
 
-class testImagesDataset(Dataset):
-    def __init__(self, root, transform=None):
-        self.root = root
-        self.transform = transform
+    @returns:
+        (train_loader, val_loader) dataloaders representing the training and validation data 
+    """
+    # Create PyTorch dataset using ImageFolder for LeNet
+    dataset = datasets.ImageFolder(root = dir, transform = transform)
 
-        # sorts list of file path names alphabetically
-        self.images = sorted([os.path.join(root, img) for img in os.listdir(root)])
-        # dict comprehension that assigns index as key to file path name
-        self.labels = {os.path.basename(img): index for index, img in enumerate(self.images)}
+    # Split the data into training and testing subsets
+    train_data, test_data = random_split(dataset, [train_size, 1 - train_size])
 
-    def __len__(self):
-        return len(self.images)
+    # Instantiate the train loader
+    train_loader = DataLoader(train_data, batch_size = batch_size, shuffle = shuffle, num_workers = num_workers, pin_memory = pin_memory)
 
-    def __getitem__(self, index):
-        img_path = self.images[index]
-        image = Image.open(img_path).convert('RGB')
-        if self.transform:
-            image = self.transform(image)
-        label = self.labels[os.path.basename(img_path)]
-        return image, label
+    # Instantiate the test loader
+    val_loader = DataLoader(test_data, batch_size = batch_size, shuffle = shuffle, num_workers = num_workers, pin_memory = pin_memory)
 
-# creates our dataset and dataloader
-test_dataset = testImagesDataset(root = "ASL_Data/asl_alphabet_test/asl_alphabet_test", transform=transform)
-test_loader = DataLoader(test_dataset, batch_size = 1) """
+    return (train_loader, val_loader)
