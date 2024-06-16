@@ -7,6 +7,7 @@ from PIL import Image
 from scipy import stats
 
 from models import AlexNet
+from workflow_functions import *
 
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((227,227)),
@@ -57,8 +58,7 @@ def main_loop():
         model_path: string, path to the saved model weights
     """
     # get the trained model weights
-    model = AlexNet()
-    model.load_state_dict(torch.load("AlexNet30Epoch.pth"))
+    model = load_model("AlexNet30Epoch.pth")
 
 
     # get a file descriptor to the webcam
@@ -87,8 +87,6 @@ def main_loop():
         if not ret:
             continue
 
-
-
         frame = cv2.flip(frame, 1)
         frame = cv2.rectangle(frame,
                               (top_left_x, top_left_y),
@@ -114,8 +112,6 @@ def main_loop():
 
         cv2.imshow("frame", frame)
 
-
-        
         # if the user presses q break the loop
         if cv2.waitKey(300) & 0xFF == ord('q'):
             break
