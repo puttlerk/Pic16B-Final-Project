@@ -13,8 +13,7 @@ train_transform_le = transforms.Compose([
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
     # Conver to tensor
     transforms.ToTensor(),
-<<<<<<< HEAD
-=======
+
     # Normalize
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
@@ -30,7 +29,7 @@ train_transform_alex = transforms.Compose([
     # Conver to tensor
     transforms.ToTensor(),
     # Normalize
->>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
+
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
@@ -41,8 +40,7 @@ test_transform_le = transforms.Compose([
     transforms.Resize((32, 32)),
     # Convert to tensor
     transforms.ToTensor(),
-<<<<<<< HEAD
-=======
+
     # Normalize
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
@@ -54,7 +52,6 @@ test_transform_alex = transforms.Compose([
     # Convert to tensor
     transforms.ToTensor(),
     # Normalize
->>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 

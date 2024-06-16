@@ -9,7 +9,7 @@ class LeNet5(nn.Module):
 
         super(LeNet5,self).__init__()
 
-<<<<<<< HEAD
+
         self.conv1 = nn.Conv2d(in_channels=3,out_channels=6, kernel_size=(5,5), stride=1, padding=0)
         self.pool1 = nn.MaxPool2d(kernel_size=(2,2), stride=2)
         self.conv2 = nn.Conv2d(in_channels=6,out_channels=16, kernel_size=(5,5), stride=1, padding=0)
@@ -18,7 +18,7 @@ class LeNet5(nn.Module):
         self.fc4 = nn.Linear(120, 84)
         self.fc5 = nn.Linear(84, 29)
 
-=======
+
         self.conv1  = nn.Conv2d(in_channels = 3, out_channels = 6, kernel_size = (5, 5), stride = 1, padding = 0)
         self.pool1  = nn.MaxPool2d(kernel_size = (2, 2), stride = 2)
         self.conv2  = nn.Conv2d(in_channels = 6, out_channels = 16, kernel_size = (5, 5), stride = 1, padding = 0)
@@ -27,17 +27,16 @@ class LeNet5(nn.Module):
         self.fc4    = nn.Linear(120, 84)
         self.fc5    = nn.Linear(84, 29)
         self.drop   = nn.Dropout(p = 0.5)
->>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
+
 
     def forward(self, x):
         x = F.relu(self.pool1(self.conv1(x)))
         x = F.relu(self.pool2(self.conv2(x)))
         x = x.view(-1, 400)
         x = F.relu(self.fc3(x))
-<<<<<<< HEAD
-=======
+
         x = self.drop(x)
->>>>>>> c60c0f10c950f08f308e5d8a119a74cd47fb1c8c
+
         x = F.relu(self.fc4(x))
         x = self.fc5(x)
         return x
