@@ -119,8 +119,8 @@ G_TRAIN_IMG_PATH    = "ASL_Data/asl_alphabet_train/asl_alphabet_train"
 
 # load data for LeNet
 le_train_loader, le_val_loader = split_dataloaders(G_TRAIN_IMG_PATH, train_size = 0.8, batch_size = G_BATCH_SIZE, num_workers = G_NUM_WORKERS, transform = train_transform_le)
-torch.save(le_train_loader, 'LeNetTrainLoader.pth')
-torch.save(le_val_loader, "LeNetValLoader.pth")
+torch.save(le_train_loader, 'LeNetTrainLoader')
+torch.save(le_val_loader, "LeNetValLoader")
 
 # load data for AlexNet
 alex_train_loader, alex_val_loader = split_dataloaders(G_TRAIN_IMG_PATH, train_size = 0.8, batch_size = G_BATCH_SIZE, num_workers = G_NUM_WORKERS, transform = train_transform_alex)
