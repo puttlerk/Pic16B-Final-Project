@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torchvision import transforms
 import PIL
+from models import AlexNet
 
 from workflow_functions import *
 
@@ -54,7 +55,8 @@ def main_loop():
         model_path: string, path to the saved model weights
     """
     # get the trained model weights
-    model = load_model("AlexNet30Epoch.pth")
+    model = AlexNet()
+    model = torch.load("AlexNet30Epoch.pth", map_location=torch.device('cpu'))
 
     # get a file descriptor to the webcam
     vid = cv2.VideoCapture(0)
