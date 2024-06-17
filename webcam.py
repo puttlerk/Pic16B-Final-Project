@@ -7,6 +7,8 @@ import PIL
 from workflow_functions import *
 
 
+# requires AlexNet30Epoch.pth to be downloaded and in the same directory
+
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((227,227)),
     transforms.ToTensor(),
@@ -87,7 +89,7 @@ def main_loop():
                               (255, 0, 0),
                               2)
 
-         # show the frame
+        # show the frame
         
         # crop out the part that we use for prediction
         pred_frame = frame[top_left_y:bot_right_y, top_left_x:bot_right_x]
