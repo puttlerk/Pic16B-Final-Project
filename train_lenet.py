@@ -42,7 +42,7 @@ for epoch in range(epochs):
     lenet_test_accuracies.append(test_accuracy)
 
 # save the LeNet model weights
-save_model(lenet, "LeNet30Epoch.pth")
+save_model(lenet, "LeNet3Epoch.pth")
 
 # save and show the plot for LeNet
 make_plots("LeNet30EpochHistory.png", lenet_train_losses, lenet_test_losses, lenet_train_accuracies, lenet_test_accuracies)
