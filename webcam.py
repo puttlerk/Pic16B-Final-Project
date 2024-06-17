@@ -3,21 +3,15 @@ import numpy as np
 import torch
 from torchvision import transforms
 import PIL
-from PIL import Image
-from scipy import stats
 
-from models import AlexNet
 from workflow_functions import *
+
 
 WEBCAM_TRANSFORM = transforms.Compose([
     transforms.Resize((227,227)),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
-
-labels_names = [chr(ord('A') + i) for i in range(26)]
-labels_names.extend(["del","nothing","space"])
-
 
 def predict_on_frame(frame, model):
     """
@@ -59,7 +53,6 @@ def main_loop():
     """
     # get the trained model weights
     model = load_model("AlexNet30Epoch.pth")
-
 
     # get a file descriptor to the webcam
     vid = cv2.VideoCapture(0)
