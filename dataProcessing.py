@@ -124,5 +124,5 @@ torch.save(le_val_loader, "LeNetValLoader.pth")
 
 # load data for AlexNet
 alex_train_loader, alex_val_loader = split_dataloaders(G_TRAIN_IMG_PATH, train_size = 0.8, batch_size = G_BATCH_SIZE, num_workers = G_NUM_WORKERS, transform = train_transform_alex)
-torch.save(alex_train_loader, 'AlexNetTrainLoader.pth')
-torch.save(alex_val_loader, "AlexNetValLoader.pth")
+torch.save(alex_train_loader, 'AlexNetTrainLoader')
+torch.save(alex_val_loader, "AlexNetValLoader")
