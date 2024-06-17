@@ -9,16 +9,6 @@ class LeNet5(nn.Module):
 
         super(LeNet5,self).__init__()
 
-
-        self.conv1 = nn.Conv2d(in_channels=3,out_channels=6, kernel_size=(5,5), stride=1, padding=0)
-        self.pool1 = nn.MaxPool2d(kernel_size=(2,2), stride=2)
-        self.conv2 = nn.Conv2d(in_channels=6,out_channels=16, kernel_size=(5,5), stride=1, padding=0)
-        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)
-        self.fc3 = nn.Linear(400,120)
-        self.fc4 = nn.Linear(120, 84)
-        self.fc5 = nn.Linear(84, 29)
-
-
         self.conv1  = nn.Conv2d(in_channels = 3, out_channels = 6, kernel_size = (5, 5), stride = 1, padding = 0)
         self.pool1  = nn.MaxPool2d(kernel_size = (2, 2), stride = 2)
         self.conv2  = nn.Conv2d(in_channels = 6, out_channels = 16, kernel_size = (5, 5), stride = 1, padding = 0)
@@ -28,20 +18,18 @@ class LeNet5(nn.Module):
         self.fc5    = nn.Linear(84, 29)
         self.drop   = nn.Dropout(p = 0.5)
 
-
     def forward(self, x):
         x = F.relu(self.pool1(self.conv1(x)))
         x = F.relu(self.pool2(self.conv2(x)))
         x = x.view(-1, 400)
         x = F.relu(self.fc3(x))
-
         x = self.drop(x)
-
         x = F.relu(self.fc4(x))
         x = self.fc5(x)
         return x
 
-# Classic model architecture of AlexNet
+# Classic model architecture of AlexNet with modified linear layer weights
+# in order to shrink the saved model size enough to be uploaded to github
 class AlexNet(nn.Module):
 
     def __init__(self):
@@ -57,10 +45,10 @@ class AlexNet(nn.Module):
         self.conv5  = nn.Conv2d(in_channels = 384, out_channels = 256, kernel_size = 3, stride = 1, padding = 1)
         self.pool3  = nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 0)
         self.drop1  = nn.Dropout(p = 0.5)
-        self.fc1    = nn.Linear(256 * 6 * 6, 4096)
+        self.fc1    = nn.Linear(256 * 6 * 6, 2048)
         self.drop2  = nn.Dropout(p = 0.5)
-        self.fc2    = nn.Linear(4096, 4096)
-        self.fc3    = nn.Linear(4096, 29)
+        self.fc2    = nn.Linear(2048, 1024)
+        self.fc3    = nn.Linear(1024, 29)
 
     def forward(self, input):
         input = F.relu(self.conv1(input))

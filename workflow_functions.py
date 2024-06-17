@@ -117,7 +117,7 @@ def train(model, train_loader, test_loader, optimizer, loss_criteria, epoch, dev
         
     return (train_loss, test_loss, train_acc, test_acc)  
 
-def make_plots(file_name, train_losses, test_losses, train_accuracies, test_accuracies):
+def make_plots(title, train_losses, test_losses, train_accuracies, test_accuracies):
     """
     Creates a losses and accuracies plots and saves them to specified file name.
 
@@ -154,14 +154,17 @@ def make_plots(file_name, train_losses, test_losses, train_accuracies, test_accu
     ax[1].set_xticks(np.arange(1, epochs + 1, 3));
     ax[1].legend(loc = "upper right")
 
+    # title the plot
+    plt.title(title)
+
     # save plot
-    plt.savefig(file_name, format="png")
+    plt.savefig(title, format="png")
 
     # close the figure
     plt.close()
 
 
-def create_confusion_matrix(file_name, model, test_loader, device):
+def create_confusion_matrix(title, model, test_loader, device):
     """ 
     Creates a confusion matrix given a model and a dataLoader object
     
@@ -202,7 +205,7 @@ def create_confusion_matrix(file_name, model, test_loader, device):
     plt.tight_layout()
 
     # saves the figure
-    plt.savefig(file_name, format = "png")
+    plt.savefig(title, format = "png")
 
     # close the figure
     plt.close()

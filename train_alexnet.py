@@ -30,6 +30,8 @@ alex = AlexNet().to(G_DEVICE)
 optimizer = optim.Adam(alex.parameters(), lr = learning_rate)
 loss_criteria = nn.CrossEntropyLoss().to(G_DEVICE)
 
+print(alex)
+
 # train AlexNet
 for epoch in range(epochs):
     # get metrics
